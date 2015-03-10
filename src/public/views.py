@@ -1,7 +1,7 @@
 """
 Logic for dashboard related routes
 """
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, jsonify
 from .forms import vstupkarty
 from ..data.database import db
 from ..data.models import LogUser, karty
@@ -28,3 +28,14 @@ def ListuserLog():
 def vystup():
     pole = db.session.query(karty.CISLO_KARTY.label("CISLO_KARTY"),func.strftime('%Y-%m-%d %H:%M', karty.TIME).label("time")).group_by(func.strftime('%Y-%m', karty.TIME)).all()
     return render_template("public/vystup.tmpl",data = pole)
+
+
+@blueprint.route('/_add_numbers', methods=['GET','PUT'])
+def add_numbers():
+    a = request.args.get('a', 0, type=int)
+    b = request.args.get('b', 0, type=int)
+    return jsonify(result=a + b)
+
+@blueprint.route('/jquery', methods=['GET','PUT'])
+def jquery_ukazka():
+    return render_template('public/jquery.tmpl')
